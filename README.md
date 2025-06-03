@@ -1,3 +1,4 @@
+```
 /job-finder/
 │
 ├── /app/                  # точка входа (main.go)
@@ -16,3 +17,4 @@
 │
 ├── go.mod
 └── README.md
+```
