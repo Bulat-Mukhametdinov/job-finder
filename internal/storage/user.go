@@ -12,7 +12,7 @@ type UserStorage struct {
 
 func (s *UserStorage) Create(user *models.User) error {
 	_, err := s.DB.NamedExec(`
-		INSERT INTO user (username, password_hash)
+		INSERT INTO users (username, password_hash)
 		VALUES (:username, :password_hash)
 	`, user)
 	return err
@@ -20,6 +20,12 @@ func (s *UserStorage) Create(user *models.User) error {
 
 func (s *UserStorage) GetByUsername(username string) (*models.User, error) {
 	var u models.User
-	err := s.DB.Get(&u, "SELECT * FROM user WHERE username = ?", username)
+	err := s.DB.Get(&u, "SELECT * FROM users WHERE username = ?", username)
+	return &u, err
+}
+
+func (s *UserStorage) GetByUserID(userId int) (*models.User, error) {
+	var u models.User
+	err := s.DB.Get(&u, "SELECT * FROM users WHERE id = ?", userId)
 	return &u, err
 }

@@ -6,6 +6,7 @@ import (
 	"job-finder/internal/storage"
 	"log"
 	"net/http"
+	"job-finder/internal/auth"
 )
 
 func main() {
@@ -24,5 +25,8 @@ func main() {
 	http.HandleFunc("/", handler.JobHandler)
 
 	fmt.Println("Server is up on http://localhost:8080")
+	auth.RegisterRoutes(db)
 	http.ListenAndServe(":8080", nil)
+	
+
 }
