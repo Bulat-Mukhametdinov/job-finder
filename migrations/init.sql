@@ -13,3 +13,11 @@ create table if not exists favourites (
     user_id integer not null,
     foreign key (user_id) references users(id) on delete cascade,
 );
+
+create table if not exists sessions (
+    token char(16) primary key,
+    expires_at timestamp,
+    created_at timestamp default current_timestamp,
+    user_id integer not null,
+    foreign key (user_id) references users(id) on delete cascade
+)
