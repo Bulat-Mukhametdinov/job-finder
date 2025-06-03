@@ -1,52 +1,60 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
+  <link rel="stylesheet" href="/web/static/style.css"/>
   <meta charset="UTF-8" />
-  <title>JobFinder</title>
-  <link rel="stylesheet" href="static/style.css" />
+  <title>Job Finder</title>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <a href="/">JobFinder</a>
-      <nav>
-        <a href="/profile">ivan_dev</a>
-        <a href="/logout">Выйти</a>
-      </nav>
-    </div>
-  </header>
-  <main>
-    <div class="search-box">
-      <form method="GET" action="/">
-        <input type="text" name="q" placeholder="Поиск вакансий..." value="Golang" />
-        <button type="submit">Найти</button>
-      </form>
-    </div>
+  <div class="top-banner">
+    {{if eq .Registration "1"}}
+    <button class="login-button">Выйти</button>
+    <button class="register-button">Профиль</button>
+    {{else}}
+      <button class="login-button">Войти</button>
+      <button class="register-button">Регистрация</button>
+    {{end}}
+  </div>
+  <h1>Job Finder</h1>
+  <form method="GET" action="/">
+    <input type="text" name="q" placeholder="Enter search query" value="{{.Query}}" />
+    <button type="submit">Search</button>
+  </form>
 
-    <ul class="vacancy-list">
+  <h2>Results:</h2>
+  {{if .Jobs}}
+    {{range .Jobs}}
+      <div class="job">
+        <div class="job-info">
+          <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
 
-      <li>
-        <a href="https://hh.ru/vacancy/1">Backend Developer at Yandex</a>
-        <form action="/favourite" method="POST" style="display:inline;">
-          <input type="hidden" name="link" value="https://hh.ru/vacancy/1">
-          <button type="like">♥</button>
-        </form>
-      </li>
-      <li>
-        <a href="https://hh.ru/vacancy/2">Golang Engineer at Sber</a>
-        <form action="/favourite" method="POST" style="display:inline;">
-          <input type="hidden" name="link" value="https://hh.ru/vacancy/2">
-          <button type="like">♥</button>
-        </form>
-      </li>
-      <li>
-        <a href="https://hh.ru/vacancy/3">Junior Go Developer at VK</a>
-        <form action="/favourite" method="POST" style="display:inline;">
-          <input type="hidden" name="link" value="https://hh.ru/vacancy/3">
-          <button type="like">♥</button>
-        </form>
-      </li>
-    </ul>
-  </main>
+          {{if .JobCity}}
+            <p>City: {{.JobCity}}{{if .JobIsRemote}} | Remote work{{end}}</p>
+          {{else if .JobIsRemote}}
+            <p>Remote work</p>
+          {{end}}
+
+          {{if and .MinSalary .MaxSalary}}
+            <p>
+              Salary: from {{.MinSalary}} to {{.MaxSalary}} per 
+              <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
+            </p>
+          {{end}}
+
+          {{if .JobPostTime}}
+            <p>Posted: {{.JobPostTime}}</p>
+          {{end}}
+
+          <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
+        </div>
+
+        {{if .EmployerLogo}}
+          <img src="{{.EmployerLogo}}" alt="Company Logo" />
+        {{end}}
+      </div>
+    {{end}}
+  {{else}}
+    <p>No jobs found.</p>
+  {{end}}
 </body>
 </html>

@@ -22,7 +22,6 @@ type Job struct {
 	JobState      string  `json:"job_state"`
 	JobPostTime   string  `json:"job_posted_at"`
 	EmployerLogo  string  `json:"employer_logo"`
-	SalaryPeriod  string  `json:"job_salary_period"`
 	JobHighlights struct {
 		Qualifications   []string `json:"Qualifications"`
 		Benefits         []string `json:"Benefits"`
@@ -34,24 +33,24 @@ type JobResponse struct {
 	Data []Job `json:"data"`
 }
 
-func GetJob(query string, page string, numPages string, country string, language string, datePosted string,
-	workFromHome string, jobRequirements string, excludeJobPublishers string, fields string) []Job {
+func GetJob(query string, page string, num_pages string, country string, language string, date_posted string,
+	work_from_home string, job_requirements string, exclude_job_publishers string, fields string) []Job {
 
-	url, err := buildSearchURL(query, page, numPages, country, language, datePosted,
-		workFromHome, jobRequirements, excludeJobPublishers, fields)
+	url, err := buildSearchURL(query, page, num_pages, country, language, date_posted,
+		work_from_home, job_requirements, exclude_job_publishers, fields)
 
 	if err != nil {
-		log.Fatal("Error creating URL:", err)
+		log.Fatal("Error creating url:", err)
 	}
 
 	rapidapiKey := os.Getenv("RAPID_API_KEY")
 	if rapidapiKey == "" {
-		log.Fatal("RAPID_API_KEY not found in .env")
+		log.Fatal("RAPID_API_KEY not fond in .env")
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatal("Error creating request:", err)
+		log.Fatal("Error in requesting:", err)
 	}
 
 	req.Header.Add("x-rapidapi-key", rapidapiKey)
@@ -59,21 +58,46 @@ func GetJob(query string, page string, numPages string, country string, language
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatal("Error executing request:", err)
+		log.Fatal("Ошибка при выполнении запроса:", err)
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal("Error reading response body:", err)
+		log.Fatal("Ошибка чтения тела ответа:", err)
 	}
 	var resp JobResponse
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
-		log.Fatal("Error parsing JSON:", err)
+		log.Fatal("Ошибка при разборе JSON:", err)
 	}
 
 	return resp.Data
+
+	// for _, job := range resp.Data {
+	// 	fmt.Println("Title:", job.JobTitle)
+	// 	fmt.Println("City:", job.JobCity)
+	// 	if job.MinSalary != nil && job.MaxSalary != nil {
+	// 		fmt.Printf("Salary: %.2f - %.2f\n", *job.MinSalary, *job.MaxSalary)
+	// 	}
+	// 	fmt.Println("Remote:", job.JobIsRemote)
+	// 	fmt.Println("Apply link:", job.JobApplyLink)
+	// 	fmt.Println("Qualifications:")
+	// 	for i, qual := range job.JobHighlights.Qualifications {
+	// 		fmt.Printf("  %d. %s\n", i+1, qual)
+	// 	}
+
+	// 	fmt.Println("Benefits:")
+	// 	for i, benefit := range job.JobHighlights.Benefits {
+	// 		fmt.Printf("  %d. %s\n", i+1, benefit)
+	// 	}
+
+	// 	fmt.Println("Responsibilities:")
+	// 	for i, resp := range job.JobHighlights.Responsibilities {
+	// 		fmt.Printf("  %d. %s\n", i+1, resp)
+	// 	}
+	// 	fmt.Println()
+	// }
 }
 
 func buildSearchURL(
