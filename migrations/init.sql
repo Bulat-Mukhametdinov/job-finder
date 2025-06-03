@@ -11,7 +11,7 @@ create table if not exists favourites (
     comments text,
     created_at timestamp default current_timestamp,
     user_id integer not null,
-    foreign key (user_id) references users(id) on delete cascade,
+    foreign key (user_id) references users(id) on delete cascade
 );
 
 create table if not exists sessions (
@@ -20,4 +20,4 @@ create table if not exists sessions (
     created_at timestamp default current_timestamp,
     user_id integer not null,
     foreign key (user_id) references users(id) on delete cascade
-)
+);
