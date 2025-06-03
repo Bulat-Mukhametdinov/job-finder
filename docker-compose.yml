@@ -1,6 +1,22 @@
 services:
-  bd:
-    image: postgres:13.2-alpine
+
+version: '3.8'
+
+services:
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - DB_DSN=postgres://postgres:postgres@db:5432/jobfinder?sslmode=disable
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
     volumes:
       - ./data/bd:/var/lib/postgresql/data
     environment:
@@ -9,3 +25,9 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db-data:
