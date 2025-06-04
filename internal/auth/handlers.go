@@ -27,8 +27,7 @@ func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
     }
     
     utils.ClearSessionCookie(w)
-    w.WriteHeader(http.StatusOK)
-    w.Write([]byte("Logout successful"))
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 // В вашем auth.go или handlers.go
@@ -76,8 +75,7 @@ func (h *AuthHandler) ProcessRegistration(w http.ResponseWriter, r *http.Request
         http.Error(w, "Failed to create user", http.StatusInternalServerError)
         return
     }
-    w.WriteHeader(http.StatusCreated)
-    w.Write([]byte("User created successfully. You can now login."))
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 // Аналогично для Login: ShowLoginPage и ProcessLogin
@@ -124,6 +122,8 @@ func (h *AuthHandler) ProcessLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
     utils.SetSessionCookie(w, session.Token)
-    w.WriteHeader(http.StatusOK)
-    w.Write([]byte("Login successful"))
+	http.Redirect(w, r, "/", http.StatusFound)
+    // w.WriteHeader(http.StatusOK)
+    // w.Write([]byte("Login successful"))
+	
 }
