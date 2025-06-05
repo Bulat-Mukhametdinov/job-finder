@@ -38,7 +38,9 @@ func main() {
 	user.RegisterRoutes(mux, app, mdlw)
 	vacancy.RegisterRoutes(mux, app, mdlw)
 
+	loggedMux := middleware.Logger(mux)
+
 	fmt.Println("Server is up on http://localhost:8080")
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe(":8080", loggedMux)
 
 }

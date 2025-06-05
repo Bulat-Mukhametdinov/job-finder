@@ -14,23 +14,23 @@ func NewAuthMiddleware(app *app.App) *AuthMiddleware {
 	return &AuthMiddleware{App: *app}
 }
 
-func (m *AuthMiddleware) ProvideUser(next http.HandlerFunc) http.Handler {
+func (m *AuthMiddleware) ProvideUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("session_id")
+		cookie, err := r.Cookie("session_token")
 		if err != nil {
 			next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), userContextKey, nil)))
 			return
 		}
 
 		session, err := m.SessionStorage.GetByToken(cookie.Value)
-		if err == nil {
+		if err != nil {
 			// Невалидная сессия
 			next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), userContextKey, nil)))
 			return
 		}
 
 		user, err := m.UserStorage.GetByUserID(session.UserId)
-		if err == nil {
+		if err != nil {
 			next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), userContextKey, nil)))
 			return
 		}

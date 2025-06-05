@@ -4,6 +4,7 @@ import (
 	"job-finder/internal/app"
 	"job-finder/internal/models"
 	"job-finder/internal/user/utils"
+	"log"
 	"net/http"
 )
 
@@ -43,7 +44,7 @@ func (h *AuthHandler) ShowRegisterPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(`
 		<h1>Регистрация</h1>
-		<form method="POST" action="/auth/register">
+		<form method="POST" action="/register">
 			<div>
 				<label for="username">Имя пользователя:</label>
 				<input type="text" id="username" name="username" required>
@@ -70,6 +71,8 @@ func (h *AuthHandler) ProcessRegistration(w http.ResponseWriter, r *http.Request
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
 	}
+
+	log.Printf("User %v successfully registered\n", username)
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
@@ -78,7 +81,7 @@ func (h *AuthHandler) ShowLoginPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(`
 		<h1>Вход</h1>
-		<form method="POST" action="/auth/login">
+		<form method="POST" action="/login">
 			<div>
 				<label for="username">Имя пользователя:</label>
 				<input type="text" id="username" name="username" required>

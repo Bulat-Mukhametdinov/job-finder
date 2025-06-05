@@ -27,6 +27,10 @@
   {{if .Jobs}}
     {{range .Jobs}}
       <div class="job">
+        {{if .EmployerLogo}}
+          <img src="{{.EmployerLogo}}" alt="Company Logo" />
+        {{end}}
+
         <div class="job-info">
           <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
 
@@ -47,16 +51,48 @@
             <p>Posted: {{.JobPostTime}}</p>
           {{end}}
 
+          
           <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
         </div>
+        
+        <button type="like" onclick="window.location.href='/favouirite'">♥</button>
 
-        {{if .EmployerLogo}}
-          <img src="{{.EmployerLogo}}" alt="Company Logo" />
-        {{end}}
       </div>
     {{end}}
   {{else}}
     <p>No jobs found.</p>
   {{end}}
 </body>
+
+<script>
+  // Вешаем обработчик на все кнопки
+  document.querySelectorAll('.like').forEach(button => {
+    button.addEventListener('click', function () {
+      const vacancyElement = this.closest('.vacancy');
+      const vacancyId = vacancyElement.getAttribute('data-id');
+
+      fetch('/api/favorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ vacancyId })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Ошибка при добавлении');
+        return response.json();
+      })
+      .then(data => {
+        console.log('Добавлено в избранное:', data);
+        this.textContent = 'В избранном ✅';
+        this.disabled = true;
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Не удалось добавить в избранное');
+      });
+    });
+  });
+</script>
 </html>
+
