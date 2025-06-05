@@ -7,5 +7,7 @@ import (
 )
 
 func RegisterRoutes(mux *http.ServeMux, app *app.App, mdlw *middleware.AuthMiddleware) {
-	mux.Handle("/", mdlw.ProvideUser(http.HandlerFunc(JobHandler)))
+	jobHandler := NewJobHandler(app)
+	mux.Handle("/", mdlw.ProvideUser(http.HandlerFunc(jobHandler.BasePage)))
+	mux.Handle("/api/favourites", mdlw.ProvideUser(http.HandlerFunc(jobHandler.Favourite)))
 }

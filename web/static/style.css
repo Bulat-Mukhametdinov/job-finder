@@ -57,6 +57,10 @@ h2 {
   color: #3c3c3c;
 }
 
+.content {
+  padding-top: 36px
+}
+
 /* Вакансии */
 
 .job {
@@ -159,20 +163,34 @@ h2 {
   background-color: #e6e6e6;
 }
 
-button[type="like"] {
+button.like {
   background-color: #ffffff00;
-  border: solid;
+  border: solid 1px black;
   color: black;
   padding: 5px 12px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-button[type="like"]:hover {
-  color: red;
+/* Ховер эффект */
+button.like:hover {
+  color: red; 
   background-color: #ff97a5;
 }
+
+/* Если в избранном — красная и с другим бордером */
+button.like[data-fav="true"] {
+  color: red;
+  border-color: red;
+  background-color: #ffe6e9;
+}
+
+/* При наведении на уже лайкнутую — чуть ярче */
+button.like[data-fav="true"]:hover {
+  background-color: #ffccd5;
+}
+
 
 /* Адаптив */
 

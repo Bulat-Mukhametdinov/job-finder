@@ -17,82 +17,65 @@
     {{end}}
   </div>
 
-  <h1>Job Finder</h1>
-  <form method="GET" action="/">
-    <input type="text" name="q" placeholder="Enter search query" value="{{.Query}}" />
-    <button type="submit">Search</button>
-  </form>
+  <div class="content">
 
-  <h2>Results:</h2>
-  {{if .Jobs}}
-    {{range .Jobs}}
-      <div class="job">
-        {{if .EmployerLogo}}
-          <img src="{{.EmployerLogo}}" alt="Company Logo" />
-        {{end}}
-
-        <div class="job-info">
-          <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
-
-          {{if .JobCity}}
-            <p>City: {{.JobCity}}{{if .JobIsRemote}} | Remote work{{end}}</p>
-          {{else if .JobIsRemote}}
-            <p>Remote work</p>
+    <h1>Job Finder</h1>
+    <form method="GET" action="/">
+      <input type="text" name="q" placeholder="Enter search query" value="{{.Query}}" />
+      <button type="submit">Search</button>
+    </form>
+  
+    {{if .Jobs}}
+      <h2>Results:</h2>
+      {{range .Jobs}}
+        <div class="job" data-id="{{.JobID}}">
+          {{if .EmployerLogo}}
+            <img src="{{.EmployerLogo}}" alt="Company Logo" />
           {{end}}
-
-          {{if and .MinSalary .MaxSalary}}
-            <p>
-              Salary: from {{.MinSalary}} to {{.MaxSalary}} per 
-              <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
-            </p>
-          {{end}}
-
-          {{if .JobPostTime}}
-            <p>Posted: {{.JobPostTime}}</p>
-          {{end}}
-
+  
+          <div class="job-info">
+            <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
+  
+            {{if .JobCity }}
+              <p>City: {{.JobCity}}{{if .JobIsRemote}} | Remote work{{end}}</p>
+            {{else if .JobIsRemote}}
+              <p>Remote work</p>
+            {{end}}
+  
+            {{if and .MinSalary .MaxSalary}}
+              <p>
+                Salary: from {{.MinSalary}} to {{.MaxSalary}} per 
+                <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
+              </p>
+            {{end}}
+  
+            {{if .JobPostTime}}
+              <p>Posted: {{.JobPostTime}}</p>
+            {{end}}
+  
+            
+            <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
+          </div>
           
-          <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
+          <button 
+            class="like" 
+            type="button" 
+            data-fav="{{if .IsFavourite}}true{{else}}false{{end}}">
+            {{if .IsFavourite}}♥{{else}}♡{{end}}
+          </button>
+  
         </div>
-        
-        <button type="like" onclick="window.location.href='/favouirite'">♥</button>
-
-      </div>
+      {{end}}
+    {{else}}
+      {{if .Query }}
+        <p>No jobs found.</p>
+      {{else}}
+        <p>Find a job of your dream</p>
+      {{end}}
     {{end}}
-  {{else}}
-    <p>No jobs found.</p>
-  {{end}}
+  </div>
+
+  <script src="/web/static/script.js?ver=1"></script>
 </body>
-
-<script>
-  // Вешаем обработчик на все кнопки
-  document.querySelectorAll('.like').forEach(button => {
-    button.addEventListener('click', function () {
-      const vacancyElement = this.closest('.vacancy');
-      const vacancyId = vacancyElement.getAttribute('data-id');
-
-      fetch('/api/favorites', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ vacancyId })
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Ошибка при добавлении');
-        return response.json();
-      })
-      .then(data => {
-        console.log('Добавлено в избранное:', data);
-        this.textContent = 'В избранном ✅';
-        this.disabled = true;
-      })
-      .catch(error => {
-        console.error('Ошибка:', error);
-        alert('Не удалось добавить в избранное');
-      });
-    });
-  });
-</script>
 </html>
 

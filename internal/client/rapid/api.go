@@ -11,6 +11,7 @@ import (
 )
 
 type Job struct {
+	IsFavourite   bool
 	JobID         string  `json:"job_id"`
 	JobTitle      string  `json:"job_title"`
 	EmployerName  string  `json:"employer_name"`
@@ -34,49 +35,104 @@ type JobResponse struct {
 	Data []Job `json:"data"`
 }
 
-func GetJob(query string, page string, numPages string, country string, language string, datePosted string,
-	workFromHome string, jobRequirements string, excludeJobPublishers string, fields string) []Job {
+type RapidAPI struct {
+	baseURL string
+	apiKey  string
+}
 
-	url, err := buildSearchURL(query, page, numPages, country, language, datePosted,
-		workFromHome, jobRequirements, excludeJobPublishers, fields)
-
-	if err != nil {
-		log.Fatal("Error creating URL:", err)
-	}
-
+func NewRapidAPI() *RapidAPI {
 	rapidapiKey := os.Getenv("RAPID_API_KEY")
 	if rapidapiKey == "" {
-		log.Fatal("RAPID_API_KEY not found in .env")
+		log.Println("RAPID_API_KEY not found in .env")
+		return nil
 	}
+	return &RapidAPI{"https://jsearch.p.rapidapi.com/", rapidapiKey}
+}
+
+func (r RapidAPI) GetJob(job_id string) (Job, error) {
+	url := r.baseURL + "job-details?job_id=" + job_id
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatal("Error creating request:", err)
+		log.Println("Error creating request:", err)
+		return Job{}, err
 	}
 
-	req.Header.Add("x-rapidapi-key", rapidapiKey)
+	req.Header.Add("x-rapidapi-key", r.apiKey)
 	req.Header.Add("x-rapidapi-host", "jsearch.p.rapidapi.com")
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatal("Error executing request:", err)
+		log.Println("Error executing request:", err)
+		return Job{}, err
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal("Error reading response body:", err)
+		log.Println("Error reading response body:", err)
+		return Job{}, err
 	}
 	var resp JobResponse
 	err = json.Unmarshal(body, &resp)
 	if err != nil {
-		log.Fatal("Error parsing JSON:", err)
+		log.Println("Error parsing JSON:", err)
+		return Job{}, err
 	}
 
-	return resp.Data
+	if len(resp.Data) != 1 {
+		log.Println("Error in retrieving valid answer from rapid api:", string(body))
+		return Job{}, nil
+	}
+	return resp.Data[0], nil
 }
 
-func buildSearchURL(
+func (r RapidAPI) GetJobs(query string, page string, numPages string, country string, language string, datePosted string,
+	workFromHome string, jobRequirements string, excludeJobPublishers string, fields string) ([]Job, error) {
+
+	url, err := r.buildSearchURL(query, page, numPages, country, language, datePosted,
+		workFromHome, jobRequirements, excludeJobPublishers, fields)
+
+	if err != nil {
+		log.Println("Error creating URL:", err)
+		return []Job{}, err
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Println("Error creating request:", err)
+		return []Job{}, err
+	}
+
+	req.Header.Add("x-rapidapi-key", r.apiKey)
+	req.Header.Add("x-rapidapi-host", "jsearch.p.rapidapi.com")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Println("Error executing request:", err)
+		return []Job{}, err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Println("Error reading response body:", err)
+		return []Job{}, err
+	}
+	var resp JobResponse
+	err = json.Unmarshal(body, &resp)
+	if err != nil {
+		log.Println("Error parsing JSON:", err)
+		return []Job{}, err
+	}
+
+	if len(resp.Data) == 0 {
+		log.Println("No jobs found:", string(body))
+	}
+	return resp.Data, nil
+}
+
+func (r RapidAPI) buildSearchURL(
 	query string,
 	page string,
 	numPages string,
@@ -88,7 +144,6 @@ func buildSearchURL(
 	excludeJobPublishers string,
 	fields string,
 ) (string, error) {
-	baseURL := "https://jsearch.p.rapidapi.com/search"
 
 	params := url.Values{}
 
@@ -124,19 +179,10 @@ func buildSearchURL(
 		params.Add("fields", fields)
 	}
 
-	fullURL := baseURL
+	fullURL := r.baseURL + "search"
 	if len(params) > 0 {
 		fullURL += "?" + params.Encode()
 	}
 
 	return fullURL, nil
-}
-
-func ParseJobs(jsonData []byte) ([]Job, error) {
-	var jobResp JobResponse
-	err := json.Unmarshal(jsonData, &jobResp)
-	if err != nil {
-		return nil, err
-	}
-	return jobResp.Data, nil
 }

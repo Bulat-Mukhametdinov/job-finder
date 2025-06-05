@@ -6,7 +6,7 @@ create table if not exists users (
 );
 
 create table if not exists favourites (
-    id text primary key autoincrement,
+    id text primary key,
     comments text,
     created_at timestamp default current_timestamp,
     user_id integer not null,
