@@ -44,6 +44,7 @@ func (h *ProfileHandler) Profile(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 			job.IsFavourite = true
+			job.JobComment = fav_job.Comments.String
 			jobs = append(jobs, job)
 		}
 	}

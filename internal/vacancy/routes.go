@@ -10,4 +10,5 @@ func RegisterRoutes(mux *http.ServeMux, app *app.App, mdlw *middleware.AuthMiddl
 	jobHandler := NewJobHandler(app)
 	mux.Handle("/", mdlw.ProvideUser(http.HandlerFunc(jobHandler.BasePage)))
 	mux.Handle("/api/favourites", mdlw.ProvideUser(http.HandlerFunc(jobHandler.Favourite)))
+	mux.Handle("/api/comment-favourite", mdlw.ProvideUser(http.HandlerFunc(jobHandler.LeaveComment)))
 }

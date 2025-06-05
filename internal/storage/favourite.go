@@ -29,7 +29,7 @@ func (s *FavouriteStorage) Delete(vacancy *models.Favourite) error {
 func (s *FavouriteStorage) UpdateComment(id string, newСomment string) error {
 	_, err := s.DB.Exec(`
 		UPDATE favourites
-		SET comment = ?
+		SET comments = ?
 		WHERE id = ?
 	`, newСomment, id)
 

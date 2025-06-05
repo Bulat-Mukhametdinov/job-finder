@@ -49,6 +49,11 @@
           {{if .IsFavourite}}♥{{else}}♡{{end}}
         </button>
 
+      <form method="POST" action="/api/comment-favourite">
+        <input type="hidden" name="vacancyId" value="{{.JobID}}" />
+        <input type="text" name="comment" placeholder="Leave your comments..." value="{{.JobComment}}" />
+        <button type="submit">Save</button>
+      </form>
       </div>
     {{end}}
   {{else}}

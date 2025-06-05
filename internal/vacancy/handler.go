@@ -133,3 +133,41 @@ func (h *JobHandler) Favourite(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(favReq)
 }
+
+func (h *JobHandler) LeaveComment(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method "+r.Method+" not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	parse_err := r.ParseForm()
+	if parse_err != nil {
+		http.Error(w, "Cannot parse form", http.StatusBadRequest)
+		return
+	}
+
+	vacancyID := r.Form.Get("vacancyId")
+	comment := r.Form.Get("comment")
+
+	if vacancyID == "" {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	user, _ := middleware.GetUserFromContext(r.Context())
+
+	if user == nil {
+		http.Error(w, "Method allowed only for authorized users", http.StatusUnauthorized)
+		return
+	}
+
+	err := h.FavouriteStorage.UpdateComment(vacancyID, comment)
+
+	if err != nil {
+		log.Printf("Error on %v comment favourite vacancy: %v", r.Method, err)
+		http.Error(w, "Some error occured", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/profile", http.StatusAccepted)
+}

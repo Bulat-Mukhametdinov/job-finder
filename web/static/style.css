@@ -145,23 +145,6 @@ h2 {
   gap: 10px; /* расстояние между кнопками */
 }
 
-.register-button,
-.login-button {
-  background-color: white;
-  color: #007bff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.register-button:hover,
-.login-button:hover {
-  background-color: #e6e6e6;
-}
 
 button.like {
   background-color: #ffffff00;
@@ -199,30 +182,48 @@ button.like[data-fav="true"]:hover {
     flex-direction: column;
     align-items: flex-start;
   }
-
+  
   .job img {
     margin: 10px 0 0 0;
     width: 60px;
     height: 60px;
   }
-
+  
   form {
     flex-direction: column;
   }
-
+  
   input[type="text"] {
     width: 100%;
     border-radius: 4px 4px 0 0;
   }
-
+  
   button {
     width: 100%;
     border-radius: 0 0 4px 4px;
     margin-top: 0.3rem;
   }
-
+  
   .lowercase {
     text-transform: lowercase;
   }
+  
+}
 
+.register-button,
+.login-button {
+  background-color: white;
+  color: #007bff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-button:hover,
+.login-button:hover {
+  background-color: #e6e6e6;
 }

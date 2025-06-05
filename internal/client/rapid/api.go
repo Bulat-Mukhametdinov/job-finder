@@ -12,6 +12,7 @@ import (
 
 type Job struct {
 	IsFavourite   bool
+	JobComment    string
 	JobID         string  `json:"job_id"`
 	JobTitle      string  `json:"job_title"`
 	EmployerName  string  `json:"employer_name"`
