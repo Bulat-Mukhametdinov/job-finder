@@ -5,16 +5,18 @@
   <meta charset="UTF-8" />
   <title>Job Finder</title>
 </head>
-<body>
+<body>  
   <div class="top-banner">
-    {{if eq .Registration "1"}}
-    <button class="login-button">Выйти</button>
-    <button class="register-button">Профиль</button>
+    {{if .User}}
+    <p>Hello, {{ .User.Username }}</p>
+    <button class="register-button" onclick="window.location.href='/profile'">Профиль</button>
+    <button class="login-button" onclick="window.location.href='/logout'">Выйти</button>
     {{else}}
-      <button class="login-button">Войти</button>
-      <button class="register-button">Регистрация</button>
+      <button class="login-button" onclick="window.location.href='/login'">Войти</button>
+      <button class="register-button" onclick="window.location.href='/register'">Регистрация</button>
     {{end}}
   </div>
+
   <h1>Job Finder</h1>
   <form method="GET" action="/">
     <input type="text" name="q" placeholder="Enter search query" value="{{.Query}}" />

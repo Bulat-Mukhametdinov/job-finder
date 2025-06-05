@@ -2,14 +2,23 @@ package main
 
 import (
 	"fmt"
-	"job-finder/internal/handler"
+	"job-finder/internal/app"
+	"job-finder/internal/middleware"
 	"job-finder/internal/storage"
+	"job-finder/internal/user"
+	"job-finder/internal/vacancy"
 	"log"
 	"net/http"
-	"job-finder/internal/auth"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	db, err := storage.ConnectSQLite("data.db")
 	if err != nil {
 		log.Fatal("Database connection error:", err)
@@ -20,13 +29,16 @@ func main() {
 	if err != nil {
 		log.Fatal("Error on migrations:", err)
 	}
-	http.Handle("/web/static/", http.StripPrefix("/web/static/", http.FileServer(http.Dir("web/static"))))
 
-	http.HandleFunc("/", handler.JobHandler)
+	app := app.NewApp(db)
+	mdlw := middleware.NewAuthMiddleware(app)
+	mux := http.NewServeMux()
+
+	mux.Handle("/web/static/", http.StripPrefix("/web/static/", http.FileServer(http.Dir("web/static"))))
+	user.RegisterRoutes(mux, app, mdlw)
+	vacancy.RegisterRoutes(mux, app, mdlw)
 
 	fmt.Println("Server is up on http://localhost:8080")
-	auth.RegisterRoutes(db)
-	http.ListenAndServe(":8080", nil)
-	
+	http.ListenAndServe(":8080", mux)
 
 }
