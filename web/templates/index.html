@@ -8,7 +8,7 @@
 <body>  
   <div class="top-banner">
     {{if .User}}
-    <p>Hello, {{ .User.Username }}</p>
+    <p class="greeting-text">Hello, {{ .User.Username }}</p>
     <button class="register-button" onclick="window.location.href='/profile'">Профиль</button>
     <button class="login-button" onclick="window.location.href='/logout'">Выйти</button>
     {{else}}

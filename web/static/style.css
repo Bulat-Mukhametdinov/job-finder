@@ -26,7 +26,7 @@ input[type="text"] {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border: 1px solid #d9d9d9;
-  border-radius: 4px 0 0 4px;
+  border-radius: 4px;
   outline: none;
   transition: border-color 0.2s ease;
 }
@@ -41,9 +41,9 @@ button {
   border: none;
   color: white;
   font-weight: 600;
-  padding: 0 1.5rem;
+  padding: 10px 20px;
   cursor: pointer;
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px;
   transition: background-color 0.2s ease;
 }
 
@@ -58,7 +58,7 @@ h2 {
 }
 
 .content {
-  padding-top: 36px
+  padding-top: 36px;
 }
 
 /* Вакансии */
@@ -71,8 +71,9 @@ h2 {
   margin-bottom: 1.2rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   transition: box-shadow 0.2s ease;
+  position: relative;
 }
 
 .job:hover {
@@ -82,6 +83,11 @@ h2 {
 .job-info {
   flex: 1;
   min-width: 0;
+  padding-right: 80px; /* Оставляем место для кнопки "лайк" */
+}
+
+.comment-section {
+  padding-right: 80px; /* То же отступ справа, чтобы избежать наложения */
 }
 
 .job-info h3 {
@@ -101,6 +107,11 @@ h2 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.greeting-text {
+  color: white;
+  text-align: center;
 }
 
 .job-info p:last-child {
@@ -123,14 +134,14 @@ h2 {
   width: 80px;
   height: 80px;
   object-fit: contain;
-  margin-left: 20px;
+  margin-right: 20px;
   border-radius: 6px;
   border: 1px solid #ddd;
   background-color: #f5f5f5;
   flex-shrink: 0;
 }
 
-  .top-banner {
+.top-banner {
   width: 100vw;
   position: fixed;
   top: 0;
@@ -142,38 +153,53 @@ h2 {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 10px; /* расстояние между кнопками */
+  text-align: center;
+  gap: 10px;
 }
 
-
 button.like {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
   background-color: #ffffff00;
   border: solid 1px black;
   color: black;
   padding: 5px 12px;
+  margin: 0;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Ховер эффект */
 button.like:hover {
-  color: red; 
+  color: red;
   background-color: #ff97a5;
 }
 
-/* Если в избранном — красная и с другим бордером */
 button.like[data-fav="true"] {
   color: red;
   border-color: red;
   background-color: #ffe6e9;
 }
 
-/* При наведении на уже лайкнутую — чуть ярче */
 button.like[data-fav="true"]:hover {
   background-color: #ffccd5;
 }
 
+/* Комментарии */
+
+.comment-display {
+  position: static;
+  padding-bottom: 2rem; /* чтобы текст не перекрывался кнопкой */
+}
+
+.edit-comment-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 100px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+}
 
 /* Адаптив */
 
@@ -182,32 +208,47 @@ button.like[data-fav="true"]:hover {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .job img {
     margin: 10px 0 0 0;
     width: 60px;
     height: 60px;
   }
-  
+
   form {
     flex-direction: column;
   }
-  
+
   input[type="text"] {
     width: 100%;
+    border: 1px solid black;
     border-radius: 4px 4px 0 0;
   }
-  
+
   button {
     width: 100%;
     border-radius: 0 0 4px 4px;
     margin-top: 0.3rem;
   }
-  
+
   .lowercase {
     text-transform: lowercase;
   }
-  
+
+  button.like {
+    position: static;
+    margin-top: 0.5rem;
+  }
+
+  .edit-comment-btn {
+    position: static;
+    display: block;
+    margin-top: 0.5rem;
+  }
+
+  .comment-display {
+    padding-bottom: 0;
+  }
 }
 
 .register-button,

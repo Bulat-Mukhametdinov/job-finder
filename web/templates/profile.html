@@ -5,11 +5,10 @@
   <meta charset="UTF-8" />
   <title>Job Finder Profile</title>
 </head>
-<body>  
-  <h1>Hello, {{ .User.Username }}</h1>
+<body>
+    <h1>Hello, {{ .User.Username }}</h1>
   <button class="login-button" onclick="window.location.href='/logout'">Выйти</button>
-
-
+    
   {{if .Jobs}}
     <h2>My favourite jobs:</h2>
     {{range .Jobs}}
@@ -17,50 +16,65 @@
         {{if .EmployerLogo}}
           <img src="{{.EmployerLogo}}" alt="Company Logo" />
         {{end}}
-
+         
         <div class="job-info">
           <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
-
+           
           {{if .JobCity }}
             <p>City: {{.JobCity}}{{if .JobIsRemote}} | Remote work{{end}}</p>
           {{else if .JobIsRemote}}
             <p>Remote work</p>
           {{end}}
-
+           
           {{if and .MinSalary .MaxSalary}}
             <p>
               Salary: from {{.MinSalary}} to {{.MaxSalary}} per 
-              <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
+               <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
             </p>
           {{end}}
-
+           
           {{if .JobPostTime}}
             <p>Posted: {{.JobPostTime}}</p>
           {{end}}
-
-          
+                      
           <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
         </div>
-        
-        <button 
-          class="like" 
-          type="button" 
-          data-fav="{{if .IsFavourite}}true{{else}}false{{end}}">
+                 
+        <button
+           class="like"
+           type="button"
+           data-fav="{{if .IsFavourite}}true{{else}}false{{end}}">
           {{if .IsFavourite}}♥{{else}}♡{{end}}
         </button>
 
-      <form method="POST" action="/api/comment-favourite">
-        <input type="hidden" name="vacancyId" value="{{.JobID}}" />
-        <input type="text" name="comment" placeholder="Leave your comments..." value="{{.JobComment}}" />
-        <button type="submit">Save</button>
-      </form>
+        <!-- Комментарий -->
+        <div class="comment-section" data-vacancy-id="{{.JobID}}">
+          {{if .JobComment}}
+            <!-- Режим просмотра комментария -->
+            <div class="comment-display">
+              <p class="comment-text">{{.JobComment}}</p>
+              <button type="button" class="edit-comment-btn">Edit</button>
+            </div>
+            <!-- Режим редактирования (скрыт по умолчанию) -->
+            <div class="comment-form" style="display: none;">
+              <input type="text" class="comment-input" value="{{.JobComment}}" />
+              <button type="button" class="save-comment-btn">Save</button>
+              <button type="button" class="cancel-comment-btn">Cancel</button>
+            </div>
+          {{else}}
+            <!-- Режим создания комментария -->
+            <div class="comment-form">
+              <input type="text" class="comment-input" placeholder="Leave your comments..." />
+              <button type="button" class="save-comment-btn">Save</button>
+            </div>
+          {{end}}
+        </div>
       </div>
     {{end}}
   {{else}}
     <p>You can save here jobs you like</p>
   {{end}}
-
-  <script src="/web/static/script.js?ver=1"></script>
+   
+  <script src="/web/static/script.js?ver=2"></script>
 </body>
 </html>
-

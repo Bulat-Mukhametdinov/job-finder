@@ -49,13 +49,21 @@ func (h *JobHandler) BasePage(w http.ResponseWriter, r *http.Request) {
 			log.Println("Error on retrieving favourite jobs:", err)
 		} else {
 			favMap := make(map[string]bool, len(favouriteJobs))
+			commentMap := make(map[string]string, len(favouriteJobs))
+			
 			for _, fav := range favouriteJobs {
 				favMap[fav.ID] = true
+				if fav.Comments.Valid {
+					commentMap[fav.ID] = fav.Comments.String
+				}
 			}
 
 			for i := range jobs {
 				if favMap[jobs[i].JobID] {
 					jobs[i].IsFavourite = true
+					if comment, exists := commentMap[jobs[i].JobID]; exists {
+						jobs[i].JobComment = comment
+					}
 				}
 			}
 		}
@@ -140,8 +148,8 @@ func (h *JobHandler) LeaveComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parse_err := r.ParseForm()
-	if parse_err != nil {
+	// Парсим форму
+	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Cannot parse form", http.StatusBadRequest)
 		return
 	}
@@ -150,24 +158,30 @@ func (h *JobHandler) LeaveComment(w http.ResponseWriter, r *http.Request) {
 	comment := r.Form.Get("comment")
 
 	if vacancyID == "" {
-		http.Error(w, "Bad request", http.StatusBadRequest)
+		http.Error(w, "Missing vacancyId", http.StatusBadRequest)
 		return
 	}
 
+	// Получаем пользователя из контекста
 	user, _ := middleware.GetUserFromContext(r.Context())
-
 	if user == nil {
-		http.Error(w, "Method allowed only for authorized users", http.StatusUnauthorized)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
+	// Обновляем комментарий в хранилище
 	err := h.FavouriteStorage.UpdateComment(vacancyID, comment)
-
 	if err != nil {
-		log.Printf("Error on %v comment favourite vacancy: %v", r.Method, err)
-		http.Error(w, "Some error occured", http.StatusInternalServerError)
+		log.Printf("Error updating comment for vacancy %v by user %v: %v", vacancyID, user.ID, err)
+		http.Error(w, "Failed to save comment", http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/profile", http.StatusAccepted)
+	// Возвращаем JSON ответ для AJAX
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"comment": comment,
+	})
 }
