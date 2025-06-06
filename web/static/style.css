@@ -3,7 +3,7 @@ body {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   background-color: #f7f8fa;
   margin: 2rem auto;
-  max-width: 900px;
+  max-width: 1000px;
   padding: 0 1rem;
   color: #212121;
 }
@@ -55,6 +55,10 @@ h2 {
   margin-bottom: 1rem;
   font-weight: 600;
   color: #3c3c3c;
+}
+
+.content {
+  padding-top: 36px
 }
 
 /* Вакансии */
@@ -141,6 +145,71 @@ h2 {
   gap: 10px; /* расстояние между кнопками */
 }
 
+
+button.like {
+  background-color: #ffffff00;
+  border: solid 1px black;
+  color: black;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Ховер эффект */
+button.like:hover {
+  color: red; 
+  background-color: #ff97a5;
+}
+
+/* Если в избранном — красная и с другим бордером */
+button.like[data-fav="true"] {
+  color: red;
+  border-color: red;
+  background-color: #ffe6e9;
+}
+
+/* При наведении на уже лайкнутую — чуть ярче */
+button.like[data-fav="true"]:hover {
+  background-color: #ffccd5;
+}
+
+
+/* Адаптив */
+
+@media (max-width: 600px) {
+  .job {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .job img {
+    margin: 10px 0 0 0;
+    width: 60px;
+    height: 60px;
+  }
+  
+  form {
+    flex-direction: column;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+  }
+  
+  button {
+    width: 100%;
+    border-radius: 0 0 4px 4px;
+    margin-top: 0.3rem;
+  }
+  
+  .lowercase {
+    text-transform: lowercase;
+  }
+  
+}
+
 .register-button,
 .login-button {
   background-color: white;
@@ -157,42 +226,4 @@ h2 {
 .register-button:hover,
 .login-button:hover {
   background-color: #e6e6e6;
-}
-
-
-/* Адаптив */
-
-@media (max-width: 600px) {
-  .job {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .job img {
-    margin: 10px 0 0 0;
-    width: 60px;
-    height: 60px;
-  }
-
-  form {
-    flex-direction: column;
-  }
-
-  input[type="text"] {
-    width: 100%;
-    border-radius: 4px 4px 0 0;
-  }
-
-  button {
-    width: 100%;
-    border-radius: 0 0 4px 4px;
-    margin-top: 0.3rem;
-  }
-
-  .lowercase {
-    text-transform: lowercase;
-  }
-
-
-
 }

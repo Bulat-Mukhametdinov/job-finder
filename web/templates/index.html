@@ -5,56 +5,77 @@
   <meta charset="UTF-8" />
   <title>Job Finder</title>
 </head>
-<body>
+<body>  
   <div class="top-banner">
-    {{if eq .Registration "1"}}
-    <button class="login-button">Выйти</button>
-    <button class="register-button">Профиль</button>
+    {{if .User}}
+    <p>Hello, {{ .User.Username }}</p>
+    <button class="register-button" onclick="window.location.href='/profile'">Профиль</button>
+    <button class="login-button" onclick="window.location.href='/logout'">Выйти</button>
     {{else}}
-      <button class="login-button">Войти</button>
-      <button class="register-button">Регистрация</button>
+      <button class="login-button" onclick="window.location.href='/login'">Войти</button>
+      <button class="register-button" onclick="window.location.href='/register'">Регистрация</button>
     {{end}}
   </div>
-  <h1>Job Finder</h1>
-  <form method="GET" action="/">
-    <input type="text" name="q" placeholder="Enter search query" value="{{.Query}}" />
-    <button type="submit">Search</button>
-  </form>
 
-  <h2>Results:</h2>
-  {{if .Jobs}}
-    {{range .Jobs}}
-      <div class="job">
-        <div class="job-info">
-          <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
+  <div class="content">
 
-          {{if .JobCity}}
-            <p>City: {{.JobCity}}{{if .JobIsRemote}} | Remote work{{end}}</p>
-          {{else if .JobIsRemote}}
-            <p>Remote work</p>
+    <h1>Job Finder</h1>
+    <form method="GET" action="/">
+      <input type="text" name="q" placeholder="Enter search query" value="{{.Query}}" />
+      <button type="submit">Search</button>
+    </form>
+  
+    {{if .Jobs}}
+      <h2>Results:</h2>
+      {{range .Jobs}}
+        <div class="job" data-id="{{.JobID}}">
+          {{if .EmployerLogo}}
+            <img src="{{.EmployerLogo}}" alt="Company Logo" />
           {{end}}
-
-          {{if and .MinSalary .MaxSalary}}
-            <p>
-              Salary: from {{.MinSalary}} to {{.MaxSalary}} per 
-              <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
-            </p>
-          {{end}}
-
-          {{if .JobPostTime}}
-            <p>Posted: {{.JobPostTime}}</p>
-          {{end}}
-
-          <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
+  
+          <div class="job-info">
+            <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
+  
+            {{if .JobCity }}
+              <p>City: {{.JobCity}}{{if .JobIsRemote}} | Remote work{{end}}</p>
+            {{else if .JobIsRemote}}
+              <p>Remote work</p>
+            {{end}}
+  
+            {{if and .MinSalary .MaxSalary}}
+              <p>
+                Salary: from {{.MinSalary}} to {{.MaxSalary}} per 
+                <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
+              </p>
+            {{end}}
+  
+            {{if .JobPostTime}}
+              <p>Posted: {{.JobPostTime}}</p>
+            {{end}}
+  
+            
+            <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
+          </div>
+          
+          <button 
+            class="like" 
+            type="button" 
+            data-fav="{{if .IsFavourite}}true{{else}}false{{end}}">
+            {{if .IsFavourite}}♥{{else}}♡{{end}}
+          </button>
+  
         </div>
-
-        {{if .EmployerLogo}}
-          <img src="{{.EmployerLogo}}" alt="Company Logo" />
-        {{end}}
-      </div>
+      {{end}}
+    {{else}}
+      {{if .Query }}
+        <p>No jobs found.</p>
+      {{else}}
+        <p>Find a job of your dream</p>
+      {{end}}
     {{end}}
-  {{else}}
-    <p>No jobs found.</p>
-  {{end}}
+  </div>
+
+  <script src="/web/static/script.js?ver=1"></script>
 </body>
 </html>
+

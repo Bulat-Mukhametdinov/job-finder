@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/web/static/style.css"/>
+  <meta charset="UTF-8" />
+  <title>Job Finder Profile</title>
+</head>
+<body>  
+  <h1>Hello, {{ .User.Username }}</h1>
+  <button class="login-button" onclick="window.location.href='/logout'">Выйти</button>
+
+
+  {{if .Jobs}}
+    <h2>My favourite jobs:</h2>
+    {{range .Jobs}}
+      <div class="job" data-id="{{.JobID}}">
+        {{if .EmployerLogo}}
+          <img src="{{.EmployerLogo}}" alt="Company Logo" />
+        {{end}}
+
+        <div class="job-info">
+          <h3>{{.JobTitle}} — {{.EmployerName}}</h3>
+
+          {{if .JobCity }}
+            <p>City: {{.JobCity}}{{if .JobIsRemote}} | Remote work{{end}}</p>
+          {{else if .JobIsRemote}}
+            <p>Remote work</p>
+          {{end}}
+
+          {{if and .MinSalary .MaxSalary}}
+            <p>
+              Salary: from {{.MinSalary}} to {{.MaxSalary}} per 
+              <span style="text-transform: lowercase;">{{.SalaryPeriod}}</span>
+            </p>
+          {{end}}
+
+          {{if .JobPostTime}}
+            <p>Posted: {{.JobPostTime}}</p>
+          {{end}}
+
+          
+          <p><a href="{{.JobApplyLink}}" target="_blank" rel="noopener noreferrer">Apply</a></p>
+        </div>
+        
+        <button 
+          class="like" 
+          type="button" 
+          data-fav="{{if .IsFavourite}}true{{else}}false{{end}}">
+          {{if .IsFavourite}}♥{{else}}♡{{end}}
+        </button>
+
+      <form method="POST" action="/api/comment-favourite">
+        <input type="hidden" name="vacancyId" value="{{.JobID}}" />
+        <input type="text" name="comment" placeholder="Leave your comments..." value="{{.JobComment}}" />
+        <button type="submit">Save</button>
+      </form>
+      </div>
+    {{end}}
+  {{else}}
+    <p>You can save here jobs you like</p>
+  {{end}}
+
+  <script src="/web/static/script.js?ver=1"></script>
+</body>
+</html>
+

@@ -6,8 +6,7 @@ create table if not exists users (
 );
 
 create table if not exists favourites (
-    id integer primary key autoincrement,
-    vacancy_link text not null,
+    id text primary key,
     comments text,
     created_at timestamp default current_timestamp,
     user_id integer not null,
@@ -16,7 +15,7 @@ create table if not exists favourites (
 
 create table if not exists sessions (
     token char(16) primary key,
-    expires_at timestamp,
+    expires_at timestamp not null,
     created_at timestamp default current_timestamp,
     user_id integer not null,
     foreign key (user_id) references users(id) on delete cascade
