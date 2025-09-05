@@ -1,0 +1,270 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #f7f8fa;
+  margin: 2rem auto;
+  max-width: 1000px;
+  padding: 0 1rem;
+  color: #212121;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: #2a2a2a;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+input[type="text"] {
+  width: 60%;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #1e87f0;
+  box-shadow: 0 0 4px rgba(30, 135, 240, 0.5);
+}
+
+button {
+  background-color: #1e87f0;
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #166fcc;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #3c3c3c;
+}
+
+.content {
+  padding-top: 36px;
+}
+
+/* Вакансии */
+
+.job {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: box-shadow 0.2s ease;
+  position: relative;
+}
+
+.job:hover {
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+}
+
+.job-info {
+  flex: 1;
+  min-width: 0;
+  padding-right: 80px; /* Оставляем место для кнопки "лайк" */
+}
+
+.comment-section {
+  padding-right: 80px; /* То же отступ справа, чтобы избежать наложения */
+}
+
+.job-info h3 {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e87f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.job-info p {
+  margin: 0.2rem 0;
+  color: #555;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.greeting-text {
+  color: white;
+  text-align: center;
+}
+
+.job-info p:last-child {
+  margin-bottom: 0;
+}
+
+.job-info a {
+  color: #1e87f0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.job-info a:hover {
+  text-decoration: underline;
+}
+
+/* Логотип */
+
+.job img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-right: 20px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.top-banner {
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 16px 20px;
+  box-sizing: border-box;
+  background-color: #007bff;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+button.like {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background-color: #ffffff00;
+  border: solid 1px black;
+  color: black;
+  padding: 5px 12px;
+  margin: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+button.like:hover {
+  color: red;
+  background-color: #ff97a5;
+}
+
+button.like[data-fav="true"] {
+  color: red;
+  border-color: red;
+  background-color: #ffe6e9;
+}
+
+button.like[data-fav="true"]:hover {
+  background-color: #ffccd5;
+}
+
+/* Комментарии */
+
+.comment-display {
+  position: static;
+  padding-bottom: 2rem; /* чтобы текст не перекрывался кнопкой */
+}
+
+.edit-comment-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 100px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+}
+
+/* Адаптив */
+
+@media (max-width: 600px) {
+  .job {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .job img {
+    margin: 10px 0 0 0;
+    width: 60px;
+    height: 60px;
+  }
+
+  form {
+    flex-direction: column;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 4px 4px 0 0;
+  }
+
+  button {
+    width: 100%;
+    border-radius: 0 0 4px 4px;
+    margin-top: 0.3rem;
+  }
+
+  .lowercase {
+    text-transform: lowercase;
+  }
+
+  button.like {
+    position: static;
+    margin-top: 0.5rem;
+  }
+
+  .edit-comment-btn {
+    position: static;
+    display: block;
+    margin-top: 0.5rem;
+  }
+
+  .comment-display {
+    padding-bottom: 0;
+  }
+}
+
+.register-button,
+.login-button {
+  background-color: white;
+  color: #007bff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-button:hover,
+.login-button:hover {
+  background-color: #e6e6e6;
+}

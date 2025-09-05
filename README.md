@@ -1,17 +1,18 @@
 ```
 /job-finder/
 │
-├── /app/                  # точка входа (main.go)
+├── /app/                      # точка входа (main.go)
 │
 ├── /internal/
-│   ├── /handler/              # HTTP-ручки: login, search, favorites и т.д.
-│   ├── /auth/                 # логика авторизации, куки, сессии
+│   ├── /app/                  # базовое приложение
+│   ├── /middleware/           # middlewares
+│   ├── /vacancy/              # HTTP-ручки главной страницы
+│   ├── /user/                 # логика авторизации и управления пользователем
 │   ├── /storage/              # доступ к БД (SQLite)
-│   ├── /service/              # бизнес-логика
 │   ├── /model/                # структуры данных
-│   └── /client/hh/            # работа с API hh.ru
+│   └── /client/rapid/         # работа с API
 │
-├── /web/                      # фронт (HTML + CSS + JS)
+├── /web/                      # фронт
 │   ├── /static/               # JS, CSS
 │   └── /templates/            # HTML-шаблоны
 │
